@@ -8,7 +8,7 @@ def vreq(url:str):
         "https": "http://127.0.0.1:9876"
     }
     try:
-        response = requests.get(url, proxies=proxy)
+        response = requests.get(url)
         response.raise_for_status()  # Raise an error for bad responses
         return response.content
     except requests.RequestException as e:
