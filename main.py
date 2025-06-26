@@ -1,13 +1,14 @@
 from lxml import etree
 from unicodedata import category
-
 import utils
 from vitem import vitem
 import io
+import tc
+from loguru import logger
 
-
-
+global nyaa
 url = "https://sukebei.nyaa.si/?page=rss"
+
 def get_rss_feed(url) -> bytes:
     try:
       rep = utils.vreq(url)
@@ -17,7 +18,9 @@ def get_rss_feed(url) -> bytes:
         return None
 def parse_rss_feed(tree):
     # 获取所有的 item 元素
+    global nyaa
     items = tree.findall(".//item")
+    insert_count = 0
     for item in items:
         title = item.find("title").text
         link = item.find("link").text
@@ -38,12 +41,20 @@ def parse_rss_feed(tree):
             print("Publication date is empty, skipping item...")
             continue
         aitem = vitem( name=title, link=link, infoHash=infoHash, size=size, date=pub_date,category=category)
-        aitem.save_to_db()
-        #print( f"Parsed item: {title}, Link: {link}, InfoHash: {infoHash}, Size: {size}, Date: {pub_date}, Category: {category}")
+        # 检查是否插入成功（未重复）
+        try:
+            aitem.save_to_db()
+            insert_count += 1
+        except Exception as e:
+            # 如果插入失败（如唯一约束冲突），不计数
+            pass
+    logger.info(f"parse_rss_feed成功插入记录数: {insert_count}")
 
-if __name__ == "__main__":
+def parse_save(url):
+    global nyaa
     rss_byte_stream = get_rss_feed(url)
     rss_file_stream = io.BytesIO( rss_byte_stream)
+    logger.info(f"获取RSS订阅成功，开始解析...")
     # 定义解析器
     parser = etree.XMLParser(encoding="utf-8")
     # 解析 XML 文件
@@ -51,3 +62,8 @@ if __name__ == "__main__":
     nyaa = tree.getroot().nsmap['nyaa']
     parse_rss_feed(tree)
 
+
+if __name__ == "__main__":
+    # parse_save(url)
+    tc = tc.TC()
+    tc.add_torrents("https://sukebei.nyaa.si/download/4332506.torrent")

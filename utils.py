@@ -1,14 +1,21 @@
 import requests
 import time
 
+import random
 
 def vreq(url:str):
     proxy = {
         "http": "http://127.0.0.1:9876",
         "https": "http://127.0.0.1:9876"
     }
+    ua = {
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+    }
+    headers ={
+        "User-Agent": random.choice(ua),
+    }
     try:
-        response = requests.get(url)
+        response = requests.get(url,proxies=proxy,headers=headers)
         response.raise_for_status()  # Raise an error for bad responses
         return response.content
     except requests.RequestException as e:
