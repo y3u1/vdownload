@@ -15,7 +15,7 @@ class vitem:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
                 link TEXT,
-                infoHash TEXT,
+                infoHash TEXT UNIQUE,
                 size TEXT,
                 date INTEGER,
                 category TEXT
@@ -24,6 +24,8 @@ class vitem:
         cursor.execute('''
             INSERT INTO items (name, link, infoHash, size, date, category)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', (self.name, self.link, self.infoHash, self.size, self.date, self.category))
+            ON CONFLICT(infoHash) DO NOTHING
+        '''
+        , (self.name, self.link, self.infoHash, self.size, self.date, self.category))
         conn.commit()
         conn.close()
