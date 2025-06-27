@@ -31,15 +31,7 @@ class TC:
         with open(name,"wb") as f:
             f.write(r)
         return name
-
-    
-    async def report_state(self,id):
-        while True:
-            try:
-                t = self.client.get_torrents(id)[0]
-                logger.info("{} : {}%".format(t.status,t.progress))
-                await asyncio.sleep(60)
-            except Exception as e:
-                logger.debug("log kill for {}".format(e))
-                return
-
+    def stop_torrents_by_id(id):
+        self.client.get_torrent(id).stop()
+        return 
+ 
