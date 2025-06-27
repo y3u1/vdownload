@@ -64,7 +64,8 @@ def parse_save(url):
 
 
 if __name__ == "__main__":
-    # parse_save(url)
+   # parse_save(url)
     tc = tc.TC()
-    tc.add_torrents("https://sukebei.nyaa.si/download/4332506.torrent")
+    tc.add_torrents("https://sukebei.nyaa.si/download/4333154.torrent")
     asyncio.run(tc.report_state(1))
+                     
