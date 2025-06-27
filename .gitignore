@@ -1,2 +1,3 @@
-./__pycache__
+./__pycache_/*_
 ./.idea
+./data.db
