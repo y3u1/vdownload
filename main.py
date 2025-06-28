@@ -7,6 +7,7 @@ import tc
 from loguru import logger
 import asyncio
 import timer
+import atexit
 global nyaa
 url = "https://sukebei.nyaa.si/?page=rss"
 
@@ -67,6 +68,7 @@ def parse_save(url):
 if __name__ == "__main__":
    # parse_save(url)
     tc = tc.TC()
+    atexit.register(tc.stop)
     timer = timer.Timer()
     tc.add_torrents("https://sukebei.nyaa.si/download/4333131.torrent")
     asyncio.run(timer.torrents_status_report_timer(tc))

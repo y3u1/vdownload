@@ -7,6 +7,7 @@ from loguru import logger
 class TC:
     def __init__(self, host='127.0.0.1', port=9090, username="admin", password="qpalzm1234"):
         self.client = transmissionrpc.Client(host, port)
+        self.start()
 
     def add_torrents(self,url,download_dir="./"):
         n = self.get_torrents_file(url)
@@ -34,4 +35,15 @@ class TC:
     def stop_torrents_by_id(id):
         self.client.get_torrent(id).stop()
         return 
- 
+    def stop(self):
+        tl = self.client.get_torrents()
+        for t in tl:
+            t.stop()
+        logger.info("Exit before stop {} torrents".format(len(tl)))
+        return
+    def start(self):
+        tl = self.client.get_torrents()
+        for t in tl:
+            t.start()
+        logger.info("Start {} torrents".format(len(tl)))
+        return 
